@@ -1,4 +1,4 @@
-import type { GetStaticProps, NextPage } from 'next'
+import type { GetServerSideProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
@@ -34,7 +34,7 @@ const Home: NextPage = ({title}: {title: string}) => {
 
 export default Home
 
-export const getStaticProps: GetStaticProps = async() => {
+export const getServerSideProps: GetServerSideProps = async() => {
   return {
     props:{
       title: 'Мой Блог'
