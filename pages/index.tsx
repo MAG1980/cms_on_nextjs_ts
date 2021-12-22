@@ -1,10 +1,11 @@
 import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { client } from '../contentful';
+import { IMain, IMainFields } from '../contentful';
+import { client } from '../contentful/index';
 import styles from '../styles/Home.module.css';
 
-const Home: NextPage = ({ main }: { main: any }) => {
+const Home: NextPage = ({ main }: { main: IMain }) => {
   console.log(main);
   return (
     <div>
@@ -16,6 +17,7 @@ const Home: NextPage = ({ main }: { main: any }) => {
 
       <main className={styles.main}>
         <h1>{main.fields.title}</h1>
+        {/* <div>{main.fields.description}</div> */}
       </main>
 
       <footer className={styles.footer}>
@@ -37,7 +39,7 @@ const Home: NextPage = ({ main }: { main: any }) => {
 export default Home;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const main = await client.getEntries({
+  const main = await client.getEntries<IMainFields>({
     content_type: 'main',
     limit: 1,
   });
