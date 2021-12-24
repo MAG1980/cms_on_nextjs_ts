@@ -3,7 +3,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { IMain, IMainFields } from '../contentful';
 import { client } from '../contentful/index';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import styles from '../styles/Home.module.css';
+import { Conainer, Row, Col } from 'reactstrap';
 
 const Home: NextPage = ({ main }: { main: IMain }) => {
   console.log(main);
@@ -15,9 +17,20 @@ const Home: NextPage = ({ main }: { main: IMain }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1>{main.fields.title}</h1>
-        {/* <div>{main.fields.description}</div> */}
+      <main>
+        <div
+          className="text-center p-5 text-white"
+          style={{
+            background: `url("${main.fields.background?.fields.file.url}") no-repeat center / cover`,
+            width: '100vw',
+          }}
+        >
+          <h1 className="mt-5">{main.fields.title}</h1>
+          {/* <div>{main.fields.description}</div> */}
+          <div className="mb-5">
+            {documentToReactComponents(main.fields.description!)}
+          </div>
+        </div>
       </main>
 
       <footer className={styles.footer}>
