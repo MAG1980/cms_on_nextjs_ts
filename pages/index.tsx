@@ -1,14 +1,21 @@
 import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
-import { IMain, IMainFields } from '../contentful';
+import { IArticle, IArticleFields, IMain, IMainFields } from '../contentful';
 import { client } from '../contentful/index';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import styles from '../styles/Home.module.css';
-import { Conainer, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 
-const Home: NextPage = ({ main }: { main: IMain }) => {
+export default function Home({
+  main,
+  articles,
+}: {
+  main: IMain;
+  articles: IArticle[];
+}) {
   console.log(main);
+  console.log(articles);
   return (
     <div>
       <Head>
@@ -47,9 +54,7 @@ const Home: NextPage = ({ main }: { main: IMain }) => {
       </footer>
     </div>
   );
-};
-
-export default Home;
+}
 
 export const getStaticProps: GetStaticProps = async () => {
   const main = await client.getEntries<IMainFields>({
@@ -57,12 +62,19 @@ export const getStaticProps: GetStaticProps = async () => {
     limit: 1,
   });
 
+  const articleEntries = await client.getEntries<IArticleFields>({
+    content_type: 'article',
+    // limit: 1,
+  });
+
   const [mainPage] = main.items;
+  const articles = articleEntries.items;
 
   return {
     props: {
-      title: 'Мой Блог',
+      // title: 'Мой Блог',
       main: mainPage,
+      articles,
     },
     revalidate: 3000,
   };
