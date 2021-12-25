@@ -1,11 +1,21 @@
 import type { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import { IArticle, IArticleFields, IMain, IMainFields } from '../contentful';
 import { client } from '../contentful/index';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import styles from '../styles/Home.module.css';
-import { Container, Row, Col } from 'reactstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  CardTitle,
+  CardText,
+  Button,
+} from 'reactstrap';
+import React from 'react';
 
 export default function Home({
   main,
@@ -14,8 +24,8 @@ export default function Home({
   main: IMain;
   articles: IArticle[];
 }) {
-  console.log(main);
-  console.log(articles);
+  // console.log(main);
+  // console.log(articles);
   return (
     <div>
       <Head>
@@ -38,6 +48,23 @@ export default function Home({
             {documentToReactComponents(main.fields.description!)}
           </div>
         </div>
+        <Container className="pt-5">
+          <Row>
+            {articles.map((article) => {
+              return (
+                <Col sm={4} key={article.fields.slug}>
+                  <Card>
+                    <CardTitle tag="h5">{article.fields.title}</CardTitle>
+                    <CardText>{article.fields.description}</CardText>
+                    <Link href={`/articles/${article.fields.slug}`}>
+                      <Button>{article.fields.action}</Button>
+                    </Link>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+        </Container>
       </main>
 
       <footer className={styles.footer}>
@@ -64,6 +91,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const articleEntries = await client.getEntries<IArticleFields>({
     content_type: 'article',
+    select: 'fields.title,fields.slug,fields.description,fields.action', //обязательно без пробелов
     // limit: 1,
   });
 
